@@ -8,10 +8,13 @@ import java.io.File;
 import static java.lang.System.exit;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import model.EmployeeHistory;
 import model.Employee;
@@ -302,14 +305,13 @@ public class CreateJPanel extends javax.swing.JPanel {
         // TODO add your handling code here:
         if(validateInformation() == true){
             JOptionPane.showMessageDialog(this," Information Saved Successfully");
+            clearTextFields();
         }
         else{
             JOptionPane.showMessageDialog(this, "Information is not saved try again");
            
         }
-        
-        clearTextFields();
-        
+       
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnMaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaleActionPerformed
@@ -363,9 +365,26 @@ public class CreateJPanel extends javax.swing.JPanel {
         }
         
         //Age
-        int age = Integer.parseInt(txtAge.getText());
-        employee.setEmployeeAge(age);
+        int age;
+        if(txtAge.getText().isEmpty()){
+            age = 0;
+        }else{
+            age = Integer.parseInt(txtAge.getText());
+        }         
         
+        if(age == 0){
+            JOptionPane.showMessageDialog(this, "Employee age can't be zero or null");
+            saveFlag = false; 
+        }else if(age < 18){
+            JOptionPane.showMessageDialog(this, "Employee age should be greater than 18.");
+            saveFlag = false; 
+        }else if(age >18 & age <99){
+            employee.setEmployeeAge(age);
+        }else if(age>99){
+            JOptionPane.showMessageDialog(this, "Employee age is more than 99. If it's wrong please update correctly.");
+            employee.setEmployeeAge(age);
+        }
+              
         //Gender
         if(btnMale.isSelected()){
             String genderMale = btnMale.getText();
@@ -373,15 +392,17 @@ public class CreateJPanel extends javax.swing.JPanel {
         }else if(btnFemale.isSelected()){
              String genderFemale = btnFemale.getText();
             employee.setEmployeeGender(genderFemale);
-        }else{
+        }else if(btnOthers.isSelected()){
             String genderOther = btnOthers.getText();
             employee.setEmployeeGender(genderOther);
+        }else{
+            JOptionPane.showMessageDialog(this, "Please select gender");
+            saveFlag = false;
         }
         
         //Employee ID
-        
         int empId=0;
-        if(txtEmployeeID.getText() == null){
+        if(txtEmployeeID.getText().isEmpty()){
             JOptionPane.showMessageDialog(this, "Employee ID must be entered");
         }else {
              empId = Integer.parseInt(txtEmployeeID.getText());
@@ -396,35 +417,124 @@ public class CreateJPanel extends javax.swing.JPanel {
         
         //Date
         Date startDate;  
-        try {
-            startDate = new SimpleDateFormat("dd/mm/yyyy").parse(txtDate.getText());
-            employee.setEmployeeStartDate(startDate);
-        } catch (ParseException ex) {
-            Logger.getLogger(CreateJPanel.class.getName()).log(Level.SEVERE, null, ex);
+        String strDate = txtDate.getText();
+        LocalDate localDate = java.time.LocalDate.now();
+        String strlocalDate = localDate.toString();
+        
+        if(strDate.equals("dd/mm/yyyy")){
+            JOptionPane.showMessageDialog(this, "Start Date can't be empty or null");
+            saveFlag = false; 
         }
+        else{
+            try {
+            startDate = new SimpleDateFormat("dd/mm/yyyy").parse(txtDate.getText());
+            Date d = new SimpleDateFormat("yyyy-mm-dd").parse(strlocalDate);
+            if( startDate.before(d)){
+                JOptionPane.showMessageDialog(this, "Start Date can't be previous date");
+                saveFlag = false; 
+            } else{
+                employee.setEmployeeStartDate(startDate);
+            }
+            
+            } catch (ParseException ex) {
+            Logger.getLogger(CreateJPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
         
         //Level
         String level = txtLevel.getText();
-        employee.setEmployeeLevel(level);
+        if(level.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Level can't be null or empty");
+            saveFlag = false;
+        }else{
+            employee.setEmployeeLevel(level);
+        }
+        
         //Team Info
         String teamInfo = txtTeamInfo.getText();
-        employee.setEmployeeTeamInfo(teamInfo);
+        if(teamInfo.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Team Info can't be null or empty");
+            saveFlag = false;
+        }else{
+            employee.setEmployeeTeamInfo(teamInfo);
+        }
         
-        //Position Title
+         //Position Title
         String positionTitle = txtPositionTitle.getText();
-        employee.setEmployeePositionTitle(positionTitle);
+        if(positionTitle.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Position Title can't be null or empty");
+            saveFlag = false;
+        }else{
+            employee.setEmployeePositionTitle(positionTitle);
+        }
         
         //Contact Number
-        Long contactNumber = Long.parseLong(txtCellphoneNumber.getText());
-        employee.setEmployeeContactNumber(contactNumber);
+        String strContactNumber = txtCellphoneNumber.getText();
+        Long contactNumber;
+
+        if(strContactNumber.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Cellphone Number can't be null or empty");
+            saveFlag = false;
+        }else
+        {
+                if(validateContactNumber(strContactNumber) == true)
+                {
+                    contactNumber = Long.parseLong(txtCellphoneNumber.getText());
+                    if(checkContactNumberHistory(contactNumber)){
+			employee.setEmployeeContactNumber(contactNumber);
+                    }
+                    else{
+			JOptionPane.showMessageDialog(this, "Cellphone Number already exist for another employee");
+                    	saveFlag = false;
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(this, "Invalid Cellphone Number");
+                    saveFlag = false;
+                }
+
+        }
         
         //Email Address
         String emailAddress = txtEmailAddress.getText();
-        employee.setEmployeeEmailAddress(emailAddress);
+        if(emailAddress.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Email address can't be null or empty");
+            saveFlag = false;
+        }else{
+            if(validateEmailAddress(emailAddress) == true){
+                
+                    if(checkEmailHistory(emailAddress))
+                    {
+                        employee.setEmployeeEmailAddress(emailAddress);
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(this, "Email address already exist for another employee");
+                    	saveFlag = false;
+                    }
+            }else{
+                JOptionPane.showMessageDialog(this, "Invalid Email address");
+                saveFlag = false;
+            }
+       }
+        
         
         //Photo
         File photoPath = filePhoto.getSelectedFile();
-        employee.setEmployeePhotoPath(photoPath);
+        
+        if(photoPath == null)
+        {
+                JOptionPane.showMessageDialog(this, "Please upload photo");
+                saveFlag = false;
+        }else if(checkImagePath(photoPath) == false)
+        {
+            JOptionPane.showMessageDialog(this, "Please upload only JPG format photo only.");
+            saveFlag = false;
+        }
+        else
+        {
+            employee.setEmployeePhotoPath(photoPath);
+        }
         
         if(saveFlag == false){
             employeeHistory.deleteEmployee(employee);
@@ -463,6 +573,85 @@ public class CreateJPanel extends javax.swing.JPanel {
         
         return resultFlag;
     }
+     private boolean validateContactNumber(String contactNumber) {
+         boolean flagContactNumber = false;
+       
+             Pattern patternContactNumber = Pattern.compile("^\\d{10}$");
+             Matcher matcherContactNumber = patternContactNumber.matcher(contactNumber);
+             flagContactNumber = matcherContactNumber.matches();
+            
+             return flagContactNumber;
+        }
+    private boolean checkContactNumberHistory(Long contactNumber)
+    {
+        boolean flagContactNumberHistory = false;
+        ArrayList<Employee> employee = employeeHistory.getEmployeeHistory();
+        for(Employee employee1: employeeHistory.getEmployeeHistory())
+        {
+          if(employee1.getEmployeeContactNumber()== contactNumber)
+          {
+              flagContactNumberHistory = false;
+              return false;
+            }
+                else flagContactNumberHistory = true;
+        }    
+             
+        return flagContactNumberHistory;
+    }
+     
+    private boolean checkEmailHistory(String emailAddress) 
+    {
+        boolean flagEmailHistory = false;
+        ArrayList<Employee> employee = employeeHistory.getEmployeeHistory();
+        for(Employee employee1: employeeHistory.getEmployeeHistory())
+        {
+            String emailHistory = employee1.getEmployeeEmailAddress();
+            
+            if(emailHistory == null)
+            {
+                flagEmailHistory = true;
+            }
+            else
+            {
+                if(emailHistory.equals(emailAddress))
+                {
+                    flagEmailHistory = false;
+                    return false;
+                }
+                else
+                { 
+                    flagEmailHistory = true;
+                }    
+                
+            }
+        }
+          
+             
+        return flagEmailHistory;
+        
+    }
+
+     private boolean validateEmailAddress(String emailAddress) {
+         Pattern patternEmailAddress = Pattern.compile("^(.+)@(\\S+)$");
+         Matcher matcherEmailAddress = patternEmailAddress.matcher(emailAddress);
+        
+        return matcherEmailAddress.matches();
+        
+     }
+     
+      private boolean checkImagePath(File photoPath) {
+          boolean flagImagePath = false;
+          String strPath = photoPath.toString().toLowerCase();
+          
+          if(strPath.endsWith(".jpg"))
+          {
+              flagImagePath = true;
+          }
+          return flagImagePath;
+      }
+
+
+   
     
     private void clearTextFields() {
         //Clear Text Fields
@@ -519,10 +708,5 @@ public class CreateJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtTeamInfo;
     // End of variables declaration//GEN-END:variables
 
-    
-
-    
-    
-
-    
+ 
 }
