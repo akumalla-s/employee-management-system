@@ -13,6 +13,16 @@ import javax.swing.JOptionPane;
  */
 public class EmployeeHistory {
     
+    private int employeeIndex;
+
+    public int getEmployeeIndex() {
+        return employeeIndex;
+    }
+
+    public void setEmployeeIndex(int employeeIndex) {
+        this.employeeIndex = employeeIndex;
+    }
+    
     private ArrayList<Employee> employeeHistory;
     
     public EmployeeHistory(){
@@ -34,6 +44,12 @@ public class EmployeeHistory {
         employeeHistory.add(newEmployee); 
         return newEmployee;
     }
+    
+    public void updateEmployee(Employee employee) {
+            
+            employeeHistory.set(getEmployeeIndex(), employee);
+    }
+  
 
     public void deleteEmployee(Employee selectedEmployee) {
         employeeHistory.remove(selectedEmployee);
@@ -41,15 +57,18 @@ public class EmployeeHistory {
 
     public Employee getEmployeeDetails(long employeeID) {
         Employee employee = null;
+        int i=0;
         for(Employee e: getEmployeeHistory()){
-            //employee = new Employee(); 
+            setEmployeeIndex(i);
             if(e.getEmployeeId() == employeeID){
                 return e;
             }
+            i++;
            
         }
         return employee;
     }
-    
+
+  
     
 }

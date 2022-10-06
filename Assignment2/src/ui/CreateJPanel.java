@@ -85,6 +85,7 @@ public class CreateJPanel extends javax.swing.JPanel {
 
         lblFirstName.setText("First Name:");
 
+        txtFirstName.setText("Srinivas");
         txtFirstName.addCaretListener(new javax.swing.event.CaretListener() {
             public void caretUpdate(javax.swing.event.CaretEvent evt) {
                 txtFirstNameCaretUpdate(evt);
@@ -108,7 +109,11 @@ public class CreateJPanel extends javax.swing.JPanel {
 
         lblLastName.setText("Last Name:");
 
+        txtLastName.setText("Reddy");
+
         lblAge.setText("Age:");
+
+        txtAge.setText("21");
 
         lblGender.setText("Gender:");
 
@@ -119,20 +124,30 @@ public class CreateJPanel extends javax.swing.JPanel {
 
         lblStartDate.setText("Start Date:");
 
-        txtDate.setText("dd/mm/yyyy");
+        txtDate.setText("05/10/2022");
 
         lblLevel.setText("Level:");
 
+        txtLevel.setText("test level");
+
         lblTeamInfo.setText("Team Info:");
 
+        txtTeamInfo.setText("test team");
+
         lblPositionTitle.setText("Position Title:");
+
+        txtPositionTitle.setText("test position");
 
         lblContactInformation.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         lblContactInformation.setText("Contact Information");
 
         lblCellphoneNumber.setText("Cellphone Number:");
 
+        txtCellphoneNumber.setText("6478047088");
+
         lblEmailAddress.setText("Email Address:");
+
+        txtEmailAddress.setText("test1@domain.com");
 
         lblUploadPhoto.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         lblUploadPhoto.setText("Upload Photo (Recommended 200 X 200)");

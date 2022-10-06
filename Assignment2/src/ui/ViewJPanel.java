@@ -8,12 +8,19 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import model.Employee;
 import model.EmployeeHistory;
@@ -28,6 +35,7 @@ public class ViewJPanel extends javax.swing.JPanel {
      * Creates new form ViewJPanel
      */
     EmployeeHistory employeeHistory;
+    File selectedFile;
     public ViewJPanel(EmployeeHistory employeeHistory) {
         initComponents();
         this.employeeHistory = employeeHistory;
@@ -71,6 +79,9 @@ public class ViewJPanel extends javax.swing.JPanel {
         txtEmailaddress = new javax.swing.JTextField();
         lblPhoto = new javax.swing.JLabel();
         photo = new javax.swing.JLabel();
+        btnUpdate = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnPhotoUpdate = new javax.swing.JButton();
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -117,11 +128,32 @@ public class ViewJPanel extends javax.swing.JPanel {
         lblPhoto.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         lblPhoto.setText("Photo");
 
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        btnPhotoUpdate.setText("Update Photo");
+        btnPhotoUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPhotoUpdateActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lblTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 963, Short.MAX_VALUE)
+            .addComponent(lblTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -148,20 +180,33 @@ public class ViewJPanel extends javax.swing.JPanel {
                                     .addComponent(txtGender)
                                     .addComponent(txtAge))))
                         .addGap(57, 57, 57)
+                        .addComponent(btnUpdate)
+                        .addGap(70, 70, 70)
+                        .addComponent(btnDelete))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lblPhoto))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblProjectInformation)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lblLevel)
-                                    .addComponent(lblStartDate)
-                                    .addComponent(lblTeamInfo)
-                                    .addComponent(lblPositionTitle))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                                    .addComponent(txtLevel)
-                                    .addComponent(txtTeamInfo)
-                                    .addComponent(txtPositionTitle))))
+                                .addGap(297, 297, 297)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblProjectInformation)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(lblLevel)
+                                            .addComponent(lblStartDate)
+                                            .addComponent(lblTeamInfo)
+                                            .addComponent(lblPositionTitle))
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(txtStartDate, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                                            .addComponent(txtLevel)
+                                            .addComponent(txtTeamInfo)
+                                            .addComponent(txtPositionTitle)))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(photo, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(64, 64, 64)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblContactInformation)
@@ -174,11 +219,8 @@ public class ViewJPanel extends javax.swing.JPanel {
                                     .addComponent(txtCellphoneNumber)
                                     .addComponent(txtEmailaddress, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lblPhoto))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(photo, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(65, 65, 65)
+                        .addComponent(btnPhotoUpdate)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -225,10 +267,19 @@ public class ViewJPanel extends javax.swing.JPanel {
                     .addComponent(lblPositionTitle)
                     .addComponent(txtPositionTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(lblPhoto)
-                .addGap(18, 18, 18)
-                .addComponent(photo, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnUpdate)
+                            .addComponent(btnDelete))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblPhoto)
+                        .addGap(18, 18, 18)
+                        .addComponent(photo, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnPhotoUpdate)
+                        .addContainerGap(26, Short.MAX_VALUE))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -242,14 +293,270 @@ public class ViewJPanel extends javax.swing.JPanel {
         }      
     }//GEN-LAST:event_btnSearchActionPerformed
 
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+        if(txtEmployeeId.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Please Input Employee ID");
+        }else{
+            deleteEmployee(Long.parseLong(txtEmployeeId.getText()));
+        }
+        
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+         if(txtEmployeeId.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Please Input Employee ID");
+        }else{
+            updateEmployee(Long.parseLong(txtEmployeeId.getText()));
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnPhotoUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPhotoUpdateActionPerformed
+        // TODO add your handling code here:
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+        selectedFile = fileChooser.getSelectedFile();
+        //System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+                
+        if(txtEmployeeId.getText().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Please Input Employee ID");
+        }else{
+            updateEmployee(Long.parseLong(txtEmployeeId.getText()));
+        }
+                
+}
+       
+    }//GEN-LAST:event_btnPhotoUpdateActionPerformed
+
+    
+      private boolean updateFlag = true;
+      private void updateEmployee(long employeeID) {
+        //private boolean updateFlag = true;
+        Employee employee = employeeHistory.getEmployeeDetails(employeeID);
+        if(employee == null){
+             JOptionPane.showMessageDialog(this, "Information not found");
+        }else if(employee.getEmployeeFirstName() == null){
+            JOptionPane.showMessageDialog(this, "Employee not found");
+        }else{
+                                  
+            //First name
+            String firstName = txtFirstName.getText();
+            validateName(firstName);
+            if(validateName(firstName) == true){
+                employee.setEmployeeFirstName(firstName);
+               
+            }else{
+                JOptionPane.showMessageDialog(this, "Invalid First Name input");
+                updateFlag = false;
+            } 
+            
+            //LastName
+            String lastName = txtLastName.getText();
+            validateName(lastName);
+            if(validateName(lastName) == true){
+                employee.setEmployeeLastName(lastName);
+               
+            }else{
+                JOptionPane.showMessageDialog(this, "Invalid Last Name input");
+                updateFlag = false;           
+            }
+            
+            //Age
+            int age;
+            if(txtAge.getText().isEmpty()){
+                age = 0;
+            }else{
+                age = Integer.parseInt(txtAge.getText());
+            }         
+            if(age == 0){
+                JOptionPane.showMessageDialog(this, "Employee age can't be zero or null");
+                updateFlag = false; 
+            }else if(age < 18){
+                JOptionPane.showMessageDialog(this, "Employee age should be greater than 18.");
+                updateFlag = false; 
+            }else if(age >18 & age <=99){
+                employee.setEmployeeAge(age);
+                
+            }else if(age>99){
+                JOptionPane.showMessageDialog(this, "Employee age is more than 99. If it's wrong please update correctly.");
+                employee.setEmployeeAge(age);
+                
+            }
+            
+            //Gender
+            String empGender = txtGender.getText();
+            if(empGender.equals("Male") || empGender.equals("Female") || empGender.equals("Others")){
+                employee.setEmployeeGender(empGender);
+                
+            }else{
+                JOptionPane.showMessageDialog(this, "Please type Male, Female or Others only.");
+                updateFlag = false;
+            }
+            
+        //Date
+        Date startDate;  
+        String strDate = txtStartDate.getText();
+        LocalDate localDate = java.time.LocalDate.now();
+        String strlocalDate = localDate.toString();
+        
+        if(strDate.equals("dd/mm/yyyy")){
+            JOptionPane.showMessageDialog(this, "Start Date can't be empty or null");
+            updateFlag = false; 
+        }
+        else{
+            try {
+            startDate = new SimpleDateFormat("dd/mm/yyyy").parse(txtStartDate.getText());
+            Date d = new SimpleDateFormat("yyyy-mm-dd").parse(strlocalDate);
+            if( startDate.before(d)){
+                JOptionPane.showMessageDialog(this, "Start Date can't be previous date");
+                updateFlag = false; 
+            } else{
+                employee.setEmployeeStartDate(startDate);
+            }
+            
+            } catch (ParseException ex) {
+            Logger.getLogger(CreateJPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        //Level
+        String level = txtLevel.getText();
+        if(level.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Level can't be null or empty");
+            updateFlag = false;
+        }else{
+            employee.setEmployeeLevel(level);
+        }
+        
+        //Team Info
+        String teamInfo = txtTeamInfo.getText();
+        if(teamInfo.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Team Info can't be null or empty");
+            updateFlag = false;
+        }else{
+            employee.setEmployeeTeamInfo(teamInfo);
+        }
+        
+         //Position Title
+        String positionTitle = txtPositionTitle.getText();
+        if(positionTitle.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Position Title can't be null or empty");
+            updateFlag = false;
+        }else{
+            employee.setEmployeePositionTitle(positionTitle);
+        }
+        
+        //Contact Number
+        String strContactNumber = txtCellphoneNumber.getText();
+        Long contactNumber;
+
+        if(strContactNumber.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Cellphone Number can't be null or empty");
+            updateFlag = false;
+        }else
+        {
+                if(validateContactNumber(strContactNumber) == true)
+                {
+                    contactNumber = Long.parseLong(txtCellphoneNumber.getText());
+                    
+                    if(checkContactNumberHistory(contactNumber, employeeID)){
+			employee.setEmployeeContactNumber(contactNumber);
+                    }
+                    else{
+			JOptionPane.showMessageDialog(this, "Cellphone Number already exist for another employee");
+                    	updateFlag = false;
+                    }
+                }else{
+                    JOptionPane.showMessageDialog(this, "Invalid Cellphone Number");
+                    updateFlag = false;
+                }
+
+        }
+        
+        //Email Address
+        String emailAddress = txtEmailaddress.getText();
+        if(emailAddress.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Email address can't be null or empty");
+            updateFlag = false;
+        }else{
+            if(validateEmailAddress(emailAddress) == true){
+                
+                    if(checkEmailHistory(emailAddress, employeeID))
+                    {
+                        employee.setEmployeeEmailAddress(emailAddress);
+                    }
+                    else
+                    {
+                        JOptionPane.showMessageDialog(this, "Email address already exist for another employee");
+                    	updateFlag = false;
+                    }
+            }else{
+                JOptionPane.showMessageDialog(this, "Invalid Email address");
+                updateFlag = false;
+            }
+       }
+        
+        //update Photo
+        if(selectedFile == null)
+        {
+                //updateFlag = true;
+        }
+        else if(checkImagePath(selectedFile) == false)
+        {
+            JOptionPane.showMessageDialog(this, "Please upload only JPG format photo only.");
+            updateFlag = false;
+        }
+        else
+        {
+            employee.setEmployeePhotoPath(selectedFile);
+        }
+        
+            
+            //Updation
+            if(updateFlag == true){
+                JOptionPane.showMessageDialog(this, "Employee updated");
+                employeeHistory.updateEmployee(employee);
+                updateFields(employee);
+            }else{
+                JOptionPane.showMessageDialog(this, "Update is not done try again");
+                searchEmployee(employeeID);
+                updateFlag = true;
+            }
+            
+            
+        }
+          
+    }
+    
+    private void deleteEmployee(long employeeID) {
+        Employee employee = employeeHistory.getEmployeeDetails(employeeID);
+        if(employee == null){
+             JOptionPane.showMessageDialog(this, "Information not found");
+        }else if(employee.getEmployeeFirstName() == null){
+            JOptionPane.showMessageDialog(this, "Employee not found");
+        }else{
+            employeeHistory.deleteEmployee(employee);
+            
+            JOptionPane.showMessageDialog(this, "Employee Deleted");
+            clearFields();
+            
+                    
+        }
+ }
+    
     private void searchEmployee(long employeeID) {
         
         
         Employee employee = employeeHistory.getEmployeeDetails(employeeID);
         if(employee == null){
             JOptionPane.showMessageDialog(this, "Information not found");
+            clearFields();
         }else if(employee.getEmployeeFirstName() == null){
             JOptionPane.showMessageDialog(this, "Employee not found");
+            clearFields();
         }
         else{
         txtFirstName.setText(employee.getEmployeeFirstName());
@@ -280,7 +587,10 @@ public class ViewJPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnPhotoUpdate;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel lblAge;
     private javax.swing.JLabel lblCellphoneNumber;
     private javax.swing.JLabel lblContactInformation;
@@ -311,5 +621,151 @@ public class ViewJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtTeamInfo;
     // End of variables declaration//GEN-END:variables
 
+    private void clearFields() {
+        txtEmployeeId.setText("");
+            txtFirstName.setText("");
+            txtLastName.setText("");
+            txtAge.setText("");
+            txtGender.setText("");
+            txtStartDate.setText("");
+            txtLevel.setText("");
+            txtTeamInfo.setText("");
+            txtPositionTitle.setText("");
+            txtCellphoneNumber.setText("");
+            txtEmailaddress.setText("");
+            Icon icon = new ImageIcon(createImage(200, 200));
+            photo.setIcon(icon);
+}
+
+    private void updateFields(Employee employee) {
+        txtFirstName.setText(employee.getEmployeeFirstName());
+        txtLastName.setText(employee.getEmployeeLastName());
+        txtAge.setText(String.valueOf(employee.getEmployeeAge()));
+        txtGender.setText(employee.getEmployeeGender());
+        
+        DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");  
+        String strDate = dateFormat.format(employee.getEmployeeStartDate());  
+        txtStartDate.setText(strDate);
+        
+        txtLevel.setText(employee.getEmployeeLevel());
+        txtTeamInfo.setText(employee.getEmployeeTeamInfo());
+        txtPositionTitle.setText(employee.getEmployeePositionTitle());
+        txtCellphoneNumber.setText(String.valueOf(employee.getEmployeeContactNumber()));
+        txtEmailaddress.setText(employee.getEmployeeEmailAddress());
+        
+         try {
+             
+            File file= new File(employee.getEmployeePhotoPath().toString());
+            Image image = ImageIO.read(file).getScaledInstance(200, 200, 200);
+            Icon icon = new ImageIcon(image);
+            photo.setIcon(icon);
+        } catch (IOException ex) {
+            Logger.getLogger(ViewJPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+}
+
+    private boolean validateName(String employeeName) {
+         String regex = "[A-Z][a-z]*\\s*?";
+        
+        if(employeeName == null){
+            JOptionPane.showMessageDialog(this, "Name must be entered");
+            return false;
+        }        
+        return employeeName.matches(regex);        
+    }
     
+     private boolean validateContactNumber(String contactNumber) {
+         boolean flagContactNumber = false;
+       
+             Pattern patternContactNumber = Pattern.compile("^\\d{10}$");
+             Matcher matcherContactNumber = patternContactNumber.matcher(contactNumber);
+             flagContactNumber = matcherContactNumber.matches();
+            
+             return flagContactNumber;
+        }
+    private boolean checkContactNumberHistory(long contactNumber, long employeeID)
+    {
+        boolean flagContactNumberHistory = false;
+        ArrayList<Employee> employee = employeeHistory.getEmployeeHistory();
+        for(Employee employee1: employeeHistory.getEmployeeHistory())
+        {
+          if((employee1.getEmployeeContactNumber()== contactNumber) && (employee1.getEmployeeId() == employeeID) )
+          {
+              flagContactNumberHistory = true;
+              return true;
+           }
+          else if(employee1.getEmployeeContactNumber()== contactNumber){
+              flagContactNumberHistory = false;
+              return false;
+          }
+           else 
+           {
+                flagContactNumberHistory = true;
+           }
+        }    
+             
+        return flagContactNumberHistory;
+    }
+     
+    private boolean checkEmailHistory(String emailAddress, long employeeID) 
+    {
+        boolean flagEmailHistory = false;
+        ArrayList<Employee> employee = employeeHistory.getEmployeeHistory();
+        for(Employee employee1: employeeHistory.getEmployeeHistory())
+        {
+            String emailHistory = employee1.getEmployeeEmailAddress();
+            
+            if(emailHistory == null)
+            {
+                flagEmailHistory = true;
+            }
+            else
+            {
+                if(emailHistory.equals(emailAddress)  && (employee1.getEmployeeId() == employeeID))
+                {
+                    flagEmailHistory = true;
+                    return true;
+                }
+                else if(emailHistory.equals(emailAddress))
+                {
+                    flagEmailHistory = false;
+                    return false;
+                }
+                else
+                { 
+                    flagEmailHistory = true;
+                }    
+                
+            }
+        }
+          
+             
+        return flagEmailHistory;
+        
+    }
+
+     private boolean validateEmailAddress(String emailAddress) {
+         Pattern patternEmailAddress = Pattern.compile("^(.+)@(\\S+)$");
+         Matcher matcherEmailAddress = patternEmailAddress.matcher(emailAddress);
+        
+        return matcherEmailAddress.matches();
+        
+     }
+     private boolean checkImagePath(File photoPath) {
+         
+          boolean flagImagePath = false;
+          String strPath = photoPath.toString().toLowerCase();
+          if(strPath.endsWith(".jpg"))
+            {
+                flagImagePath = true;
+            }
+          
+         
+          return flagImagePath;
+      }
+    
+
+  
+   
 }
