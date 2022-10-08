@@ -1,10 +1,10 @@
 # INFO-Assignment_2
 
-It is a Java Swing application for Human Resource Officer to manage all the employees in the company.
+It is a Java Swing application for the Human Resource Officer to manage all the employees in the company.
 
-User can do CRUD to employee’s profile.
+A user can do CRUD to an employee’s profile.
 
-The employee profile will have following fields:
+The employee profile will have the following fields:
 
 Name
 Employee ID
@@ -12,18 +12,17 @@ Age
 Gender
 Start date
 Level
-Team info
+Team info 
 Position title
 Contact Info
 Cell phone number
 email address
 Photo
- 
 
-Your application will allow user to do
+This application will allow users to create, read, update, and delete employee profiles.
 
-Create, Read, Update, Delete employee profile
-Search employee profile from employee directory based on different search option(Name, ID, and others fields)
-Display the photo when reading employee profile
-No database and other external tools
+Search for employee profiles in the employee directory using various search criteria (Employee ID, Email address).
 
+Display the photo when reading the employee profile.
+
+No database or other external tools have been used.
