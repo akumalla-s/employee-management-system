@@ -82,6 +82,9 @@ public class ViewJPanel extends javax.swing.JPanel {
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         btnPhotoUpdate = new javax.swing.JButton();
+        lblOr = new javax.swing.JLabel();
+        lblEnterEmployeeEmailAddress = new javax.swing.JLabel();
+        txtEmployeeEmailAddress = new javax.swing.JTextField();
 
         lblTitle.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -149,6 +152,10 @@ public class ViewJPanel extends javax.swing.JPanel {
             }
         });
 
+        lblOr.setText("OR");
+
+        lblEnterEmployeeEmailAddress.setText("Enter Employee Email Address:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -156,13 +163,6 @@ public class ViewJPanel extends javax.swing.JPanel {
             .addComponent(lblTitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1000, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(lblEmployeeID)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtEmployeeId, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(85, 85, 85)
-                        .addComponent(btnSearch))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -220,7 +220,20 @@ public class ViewJPanel extends javax.swing.JPanel {
                                     .addComponent(txtEmailaddress, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(65, 65, 65)
-                        .addComponent(btnPhotoUpdate)))
+                        .addComponent(btnPhotoUpdate))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(lblEmployeeID)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtEmployeeId, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblOr)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblEnterEmployeeEmailAddress)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtEmployeeEmailAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSearch)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -232,7 +245,10 @@ public class ViewJPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblEmployeeID)
                     .addComponent(txtEmployeeId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSearch))
+                    .addComponent(btnSearch)
+                    .addComponent(lblOr)
+                    .addComponent(lblEnterEmployeeEmailAddress)
+                    .addComponent(txtEmployeeEmailAddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblEmployeeInformation)
@@ -268,28 +284,41 @@ public class ViewJPanel extends javax.swing.JPanel {
                     .addComponent(txtPositionTitle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnUpdate)
-                            .addComponent(btnDelete))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnUpdate)
+                        .addComponent(btnDelete))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(lblPhoto)
                         .addGap(18, 18, 18)
                         .addComponent(photo, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnPhotoUpdate)
-                        .addContainerGap(26, Short.MAX_VALUE))))
+                        .addComponent(btnPhotoUpdate)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         // TODO add your handling code here:
-        if(txtEmployeeId.getText().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Please Input Employee ID");
+        long employeeID = 0;
+        String emailAddress = txtEmployeeEmailAddress.getText() ;
+        if(txtEmployeeId.getText().isEmpty() && txtEmployeeEmailAddress.getText().isEmpty()  ){
+            employeeID = 0;
+            JOptionPane.showMessageDialog(this, "Please Input Employee ID OR Email Adress");
+            
+        }
+        else if(employeeID ==0 && !emailAddress.isEmpty()){
+            //using email address
+            
+            if(validateEmailAddress(emailAddress) == true){
+                searchEmployee(employeeID , emailAddress);
+            }else{
+                JOptionPane.showMessageDialog(this, "Incorrect Email Adress");
+                txtEmployeeEmailAddress.setText("");
+            }
             
         }else{
-            searchEmployee(Long.parseLong(txtEmployeeId.getText()));
+            //using employeeId
+            searchEmployee(Long.parseLong(txtEmployeeId.getText()), emailAddress);
         }      
     }//GEN-LAST:event_btnSearchActionPerformed
 
@@ -338,6 +367,7 @@ public class ViewJPanel extends javax.swing.JPanel {
         Employee employee = employeeHistory.getEmployeeDetails(employeeID);
         if(employee == null){
              JOptionPane.showMessageDialog(this, "Information not found");
+             clearFields();
         }else if(employee.getEmployeeFirstName() == null){
             JOptionPane.showMessageDialog(this, "Employee not found");
         }else{
@@ -522,7 +552,7 @@ public class ViewJPanel extends javax.swing.JPanel {
                 updateFields(employee);
             }else{
                 JOptionPane.showMessageDialog(this, "Update is not done try again");
-                searchEmployee(employeeID);
+                searchEmployee(employeeID, txtEmployeeEmailAddress.getText());
                 updateFlag = true;
             }
             
@@ -547,10 +577,16 @@ public class ViewJPanel extends javax.swing.JPanel {
         }
  }
     
-    private void searchEmployee(long employeeID) {
+    private void searchEmployee(long employeeID, String employeeEmailAddress) {
+        
+        Employee employee = null;
+        if(employeeID == 0){
+            employee = employeeHistory.getEmployeeDetails(employeeEmailAddress);
+        }else if(employeeEmailAddress.isEmpty()){
+            employee = employeeHistory.getEmployeeDetails(employeeID);
+        }
         
         
-        Employee employee = employeeHistory.getEmployeeDetails(employeeID);
         if(employee == null){
             JOptionPane.showMessageDialog(this, "Information not found");
             clearFields();
@@ -559,6 +595,7 @@ public class ViewJPanel extends javax.swing.JPanel {
             clearFields();
         }
         else{
+        txtEmployeeId.setText(String.valueOf(employee.getEmployeeId()));
         txtFirstName.setText(employee.getEmployeeFirstName());
         txtLastName.setText(employee.getEmployeeLastName());
         txtAge.setText(String.valueOf(employee.getEmployeeAge()));
@@ -597,10 +634,12 @@ public class ViewJPanel extends javax.swing.JPanel {
     private javax.swing.JLabel lblEmailAddress;
     private javax.swing.JLabel lblEmployeeID;
     private javax.swing.JLabel lblEmployeeInformation;
+    private javax.swing.JLabel lblEnterEmployeeEmailAddress;
     private javax.swing.JLabel lblFirstName;
     private javax.swing.JLabel lblGender;
     private javax.swing.JLabel lblLastName;
     private javax.swing.JLabel lblLevel;
+    private javax.swing.JLabel lblOr;
     private javax.swing.JLabel lblPhoto;
     private javax.swing.JLabel lblPositionTitle;
     private javax.swing.JLabel lblProjectInformation;
@@ -611,6 +650,7 @@ public class ViewJPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtAge;
     private javax.swing.JTextField txtCellphoneNumber;
     private javax.swing.JTextField txtEmailaddress;
+    private javax.swing.JTextField txtEmployeeEmailAddress;
     private javax.swing.JTextField txtEmployeeId;
     private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtGender;
@@ -622,6 +662,7 @@ public class ViewJPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private void clearFields() {
+        txtEmployeeEmailAddress.setText("");
         txtEmployeeId.setText("");
             txtFirstName.setText("");
             txtLastName.setText("");

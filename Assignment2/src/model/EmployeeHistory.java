@@ -69,6 +69,16 @@ public class EmployeeHistory {
         return employee;
     }
 
+    public Employee getEmployeeDetails(String employeeEmailAddress) {
+        Employee employee = null;
+        for(Employee e: getEmployeeHistory()){
+            if(e.getEmployeeEmailAddress().equals(employeeEmailAddress)){
+                return e;
+            }
+        }
+        return employee;
+}
+
   
     
 }

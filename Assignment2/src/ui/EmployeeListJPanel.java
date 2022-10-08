@@ -34,7 +34,7 @@ public class EmployeeListJPanel extends javax.swing.JPanel {
             row[0] = employee.getEmployeeFirstName();
             row[1] = employee.getEmployeeLastName();
             row[2] = employee.getEmployeeId();
-            row[3] = employee.getEmployeePositionTitle();
+            row[3] = employee.getEmployeeEmailAddress();
             
             
             model.addRow(row);
@@ -62,7 +62,7 @@ public class EmployeeListJPanel extends javax.swing.JPanel {
                 {null, null, null, null}
             },
             new String [] {
-                "First Name", "Last Name", "Employee ID", "Position Title"
+                "First Name", "Last Name", "Employee ID", "Email Address"
             }
         ) {
             boolean[] canEdit = new boolean [] {
