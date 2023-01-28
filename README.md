@@ -1,4 +1,4 @@
-# INFO-Assignment_2
+# Employee Management System
 
 It is a Java Swing application for the Human Resource Officer to manage all the employees in the company.
 
