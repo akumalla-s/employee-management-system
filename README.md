@@ -6,17 +6,17 @@ A user can do CRUD to an employee’s profile.
 
 The employee profile will have the following fields:
 
-Name
-Employee ID
-Age
-Gender
-Start date
-Level
-Team info 
-Position title
-Contact Info
-Cell phone number
-email address
+Name, 
+Employee ID, 
+Age, 
+Gender, 
+Start date, 
+Level, 
+Team info,  
+Position title, 
+Contact Info, 
+Cell phone number, 
+email address, 
 Photo
 
 This application will allow users to create, read, update, and delete employee profiles.
